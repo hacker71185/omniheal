@@ -11,6 +11,52 @@ Designed for IT operations teams, system administrators, and tech professionals,
 
 ---
 
+## 💻 1-Command Shell Quick-Start (Terminal / Shell Interface)
+
+OmniHeal can be installed and run **entirely inside any terminal shell** (PowerShell, Windows CMD, Bash, or Zsh) with zero browser requirements:
+
+### Option A: Install directly via pip from GitHub
+```bash
+pip install git+https://github.com/hacker71185/omniheal.git
+omniheal
+```
+
+### Option B: Clone & run interactive shell directly
+```bash
+git clone https://github.com/hacker71185/omniheal.git
+cd omniheal
+pip install -r backend/requirements.txt
+python cli.py
+```
+
+### CLI Command Flags & Scripting Automation
+OmniHeal CLI supports headless script execution for automated IT operations, CI pipelines, and endpoint maintenance:
+
+```bash
+# Run deep diagnostic scan and output telemetry to shell
+python cli.py --scan
+
+# 1-Click Heal all detected issues with streaming live logs
+python cli.py --heal
+
+# Dry-Run mode: Preview all remediation commands without executing
+python cli.py --heal --dry-run
+
+# Inject and test simulated fault scenario in terminal
+python cli.py --simulate dns_blackout --heal
+
+# Export complete Markdown audit report to file
+python cli.py --report audit.md
+
+# Output raw JSON telemetry for monitoring pipelines
+python cli.py --scan --json
+
+# Launch the full-stack web UI dashboard & backend daemon
+python cli.py --web
+```
+
+---
+
 ## Architecture & System Flow
 
 OmniHeal operates with a decoupled **Dual-Mode Architecture**:
