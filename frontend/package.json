@@ -1,7 +1,9 @@
 {
-  "name": "frontend",
+  "name": "omniheal-frontend",
+  "version": "2.4.0",
+  "author": "hacker71185",
+  "license": "MIT",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

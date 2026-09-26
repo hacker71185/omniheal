@@ -28,6 +28,7 @@ import { IssueCard } from './components/IssueCard';
 import { TerminalDrawer } from './components/TerminalDrawer';
 import { FaultInjectorModal } from './components/FaultInjectorModal';
 import { ReportModal } from './components/ReportModal';
+import { HardwareAdvisorModal } from './components/HardwareAdvisorModal';
 
 export const App: React.FC = () => {
   const [scan, setScan] = useState<ScanResult | null>(null);
@@ -46,6 +47,7 @@ export const App: React.FC = () => {
   const [terminalOpen, setTerminalOpen] = useState(true);
   const [injectorOpen, setInjectorOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const [hardwareAdvisorOpen, setHardwareAdvisorOpen] = useState(false);
 
   // Check agent connectivity and initialize initial scan
   useEffect(() => {
@@ -282,6 +284,7 @@ export const App: React.FC = () => {
         onScan={handleScan}
         onHealAll={handleHealAll}
         onOpenInjector={() => setInjectorOpen(true)}
+        onOpenHardwareAdvisor={() => setHardwareAdvisorOpen(true)}
         onOpenReport={() => setReportOpen(true)}
         onToggleTerminal={() => setTerminalOpen(!terminalOpen)}
         terminalOpen={terminalOpen}
@@ -360,10 +363,14 @@ export const App: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 font-mono text-[11px] text-slate-300 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 whitespace-nowrap">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <span>Safe OS Remediation Active</span>
-                </div>
+                <button 
+                  onClick={() => setHardwareAdvisorOpen(true)}
+                  className="flex items-center gap-2 font-mono text-[11px] text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/50 px-3.5 py-1.5 rounded-lg border border-cyan-500/40 whitespace-nowrap cursor-pointer transition-all shadow-sm"
+                  title="Inspect physical hardware health & get physical repair guides"
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Physical Hardware Advisor ›</span>
+                </button>
               </div>
 
             </div>
@@ -474,6 +481,28 @@ export const App: React.FC = () => {
         scan={scan}
         healResponse={healResponse}
       />
+
+      {/* Hardware S.M.A.R.T. & Physical Damage Advisor Modal */}
+      <HardwareAdvisorModal
+        isOpen={hardwareAdvisorOpen}
+        onClose={() => setHardwareAdvisorOpen(false)}
+      />
+
+      {/* Cyber Footer with Author Attribution */}
+      <footer className="border-t border-cyber-border/70 bg-cyber-bg/95 py-5 px-4 text-center text-xs font-mono text-cyber-muted max-w-7xl mx-auto w-full flex flex-col sm:flex-row items-center justify-between gap-3 mt-8">
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-slate-200">OMNIHEAL™ v2.4 Pro</span>
+          <span className="text-cyber-dim">•</span>
+          <span>Autonomous Endpoint Diagnostics & 1-Click Self-Healing Engine</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+            ⚡ Architected & Designed by hacker71185
+          </span>
+          <span className="text-cyber-dim">•</span>
+          <span className="text-slate-400">MIT Licensed © 2026</span>
+        </div>
+      </footer>
 
     </div>
   );

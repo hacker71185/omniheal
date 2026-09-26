@@ -119,3 +119,14 @@ export interface FaultScenario {
   impact_description: string;
   simulated_metrics_impact: Record<string, any>;
 }
+
+export interface HardwareTriageItem {
+  id: string;
+  component: string;
+  hardware_name: string;
+  status: 'PHYSICAL_HEALTHY' | 'PHYSICAL_WARNING' | 'PHYSICAL_CRITICAL';
+  is_physical_issue: boolean;
+  confidence_pct: number;
+  diagnostics_reading: string;
+  actionable_repair_guide: string[];
+}

@@ -1,9 +1,14 @@
 # OmniHeal™ — Autonomous Endpoint Diagnostics & 1-Click Self-Healing Engine
 
-[![Engine Version](https://img.shields.io/badge/OmniHeal-v2.4.0-00f0ff?style=for-the-badge&logo=target)](https://github.com)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-blue?style=for-the-badge)](https://github.com)
-[![License](https://img.shields.io/badge/License-Enterprise%20Safe-10b981?style=for-the-badge)](LICENSE)
-[![Remediation](https://img.shields.io/badge/Remediation-100%25%20Non--Destructive-success?style=for-the-badge)](https://github.com)
+[![Engine Version](https://img.shields.io/badge/OmniHeal-v2.4.0-00f0ff?style=for-the-badge&logo=target)](https://github.com/hacker71185/omniheal)
+[![Architect](https://img.shields.io/badge/Architect-hacker71185-10b981?style=for-the-badge&logo=github)](https://github.com/hacker71185)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-purple?style=for-the-badge)](https://github.com/hacker71185/omniheal)
+
+> **Architected & Designed by [hacker71185](https://github.com/hacker71185)**  
+> *Autonomous Endpoint Diagnostics, S.M.A.R.T. Hardware Triage & 1-Click Self-Healing Engine*
+
+![OmniHeal Cyber Command Center](docs/omniheal-preview.jpg)
 
 **OmniHeal™** is an enterprise-grade autonomous endpoint diagnostic and 1-click self-healing engine. It detects and automatically resolves non-physical PC and laptop bottlenecks, network blackouts, memory leaks, bloated caches, and security misconfigurations in real time.
 
@@ -150,7 +155,29 @@ Instead of ambiguous Windows error codes (e.g. `0x80070002`), OmniHeal presents 
 
 ---
 
-### 3. 1-Click "Fix Everything" Self-Healing Engine
+### 3. Physical Hardware S.M.A.R.T. Triage & Physical Damage Advisor
+
+A common challenge in PC diagnostics is determining whether a slowdown, crash, or freeze is caused by **software/OS bottlenecks** (which OmniHeal heals in 1 click) or **actual physical hardware failure** (which software cannot heal).
+
+OmniHeal queries raw physical controller telemetry (`Get-PhysicalDisk`, CPU frequency dynamic range, RAM address parity lines, battery wear) and provides explicit physical repair advice:
+
+| Physical Component | Controller Diagnostic | Software Verdict | Physical Damage Triage & Repair Suggestions |
+| :--- | :--- | :--- | :--- |
+| **Storage / NVMe SSD** | Queries S.M.A.R.T. health status and reallocated NAND sectors via Windows Storage API. | **100% HEALTHY:** Software temp bloat or update lock. Reclaimed in 1 click. | **🚨 PHYSICAL DAMAGE / BAD SECTORS:** Drive reporting media degradation.<br>• *Suggestion:* **DO NOT** run intensive `chkdsk /r` (excessive head thrashing destroys failing NAND/platters).<br>• Immediately clone partitions to an external SSD with Clonezilla or Macrium Reflect.<br>• Replace physical M.2 NVMe SSD (loosen chassis screw, insert at 30° angle, tighten standoff). |
+| **CPU Thermal & Cooling** | Measures core frequencies under load to detect TjMax clock throttling (<45% base). | **100% HEALTHY:** Dynamic clock scaling active. | **⚠️ THERMAL CLAMP / DRY PASTE:** CPU pinned below base clock to prevent shutdown.<br>• *Suggestion:* Power down, remove chassis cover.<br>• Blast exhaust radiator fins with compressed air (hold fan blade gently).<br>• Clean dried paste with 99% isopropyl alcohol and reapply high-viscosity paste (Arctic MX-4 or Noctua NT-H1). |
+| **Physical Memory (RAM)** | Evaluates physical memory address space mapping and parity state. | **100% HEALTHY:** Paging thrashing is purely OS software working-set bloat. | **🚨 MEMORY CHIP FAILURE / ECC BITFLIP:** Unhandled memory parity exceptions.<br>• *Suggestion:* Power down, ground yourself.<br>• Unclip DDR4/DDR5 SO-DIMM sticks, clean gold contacts with isopropyl alcohol wipe, and reseat firmly in alternate slots until latches click.<br>• Run Windows Memory Diagnostic (`Win + R` -> `mdsched.exe`). |
+| **Network PHY / Antenna** | Tests PCIe/USB bus descriptor response and RF MAC controller. | **100% HEALTHY:** Winsock/DNS resolver cache corrupt. 1-click flush restores internet. | **⚠️ PHYSICAL DISCONNECT:** WLAN interface dropped off PCIe bus.<br>• *Suggestion:* Verify laptop physical Wi-Fi switch / Fn toggle.<br>• Open casing and verify tiny black/grey coaxial antenna cables are securely snapped onto M.2 card (U.FL IPEX connectors). |
+| **Battery / Power Delivery** | Evaluates cycle health and charge capacity (`powercfg /batteryreport`). | **100% HEALTHY:** Normal lithium discharge curve. | **🚨 CHASSIS BULGING / SWELLING:** Battery capacity degraded > 50%.<br>• *Suggestion:* **Fire hazard:** Shut down immediately and disconnect AC adapter.<br>• Do not puncture swollen pouch cells. Replace battery pack with OEM replacement immediately. |
+
+To run the Physical Hardware Advisor in your shell:
+```bash
+python cli.py --hardware
+```
+Or click **"Hardware Advisor"** in the web dashboard header.
+
+---
+
+### 4. 1-Click "Fix Everything" Self-Healing Engine
 
 OmniHeal provides both granular **"Auto-Fix Now"** triggers per card and a master **"1-Click Heal All"** button that coordinates multi-threaded remediation:
 

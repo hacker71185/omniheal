@@ -8,7 +8,8 @@ import {
   Sliders, 
   Lock, 
   Unlock,
-  Radio
+  Radio,
+  Wrench
 } from 'lucide-react';
 import type { ScanResult } from '../types';
 
@@ -22,6 +23,7 @@ interface HeaderProps {
   onScan: () => void;
   onHealAll: () => void;
   onOpenInjector: () => void;
+  onOpenHardwareAdvisor: () => void;
   onOpenReport: () => void;
   onToggleTerminal: () => void;
   terminalOpen: boolean;
@@ -37,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
   onScan,
   onHealAll,
   onOpenInjector,
+  onOpenHardwareAdvisor,
   onOpenReport,
   onToggleTerminal,
   terminalOpen
@@ -63,8 +66,12 @@ export const Header: React.FC<HeaderProps> = ({
                   v2.4 Pro
                 </span>
               </div>
-              <p className="text-[11px] text-cyber-muted font-mono tracking-tight">
-                Autonomous Endpoint Diagnostics & Self-Healing Engine
+              <p className="text-[11px] text-cyber-muted font-mono tracking-tight flex items-center gap-1.5">
+                <span>Autonomous Endpoint Engine</span>
+                <span className="text-cyber-dim">•</span>
+                <span className="text-emerald-400 font-semibold bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/20">
+                  Designed by hacker71185
+                </span>
               </p>
             </div>
           </div>
@@ -128,6 +135,16 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <Bug className="w-3.5 h-3.5 text-purple-400" />
             <span>Simulate Fault</span>
+          </button>
+
+          {/* Physical Hardware & Damage Advisor Button */}
+          <button
+            onClick={onOpenHardwareAdvisor}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono border border-cyan-500/30 bg-cyan-950/20 text-cyan-300 hover:bg-cyan-900/30 hover:border-cyan-400 transition-all cursor-pointer shadow-sm"
+            title="Physical S.M.A.R.T. and Hardware Damage Advisor"
+          >
+            <Wrench className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Hardware Advisor</span>
           </button>
 
           {/* Deep Scan Button */}

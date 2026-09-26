@@ -34,6 +34,7 @@ try:
     from app.config import is_admin, get_os_family
     from app.models import ScanResult, IssueItem
     from app.scanners.engine import run_full_scan, get_os_info
+    from app.scanners.hardware_advisor import run_physical_hardware_triage, HardwareTriageItem
     from app.remediators.network_healer import heal_network_issue
     from app.remediators.memory_healer import heal_memory_issue
     from app.remediators.cache_healer import heal_cache_issue
@@ -64,6 +65,7 @@ BANNER = f"""{CYAN}{BOLD}
 | (_) | |\\/| | .` || || __ | _| / _ \\| |__  
  \\___/|_|  |_|_|\\_|___|_||_|___/_/ \\_\\____| 
 {RESET}{DIM}Autonomous Endpoint Diagnostics & 1-Click Self-Healing Engine v2.4{RESET}
+{GREEN}⚡ Architected & Designed by hacker71185{RESET} | {CYAN}MIT Licensed © 2026{RESET}
 """
 
 def print_bar(pct: float, width: int = 24) -> str:
@@ -195,6 +197,23 @@ def execute_heal_cli(scan: ScanResult, dry_run: bool = False, specific_ids: list
         print(f" Storage Headroom Recovered: {GREEN}+{total_freed_disk} MB{RESET}")
     print("=" * 78 + "\n")
 
+def render_hardware_advisor():
+    print("\n" + "=" * 78)
+    print(f"{CYAN}{BOLD} 🛠️  PHYSICAL HARDWARE S.M.A.R.T. & DAMAGE TRIAGE ADVISOR{RESET}")
+    print(f" {DIM}Separating software/OS bugs from physical component damage with actionable repair guides{RESET}")
+    print("=" * 78)
+    items = run_physical_hardware_triage()
+    for item in items:
+        status_col = GREEN if item.status == "PHYSICAL_HEALTHY" else (YELLOW if item.status == "PHYSICAL_WARNING" else RED)
+        status_label = "✅ PASS (100% HEALTHY)" if item.status == "PHYSICAL_HEALTHY" else ("⚠️ WARNING / DEGRADED" if item.status == "PHYSICAL_WARNING" else "🚨 CRITICAL PHYSICAL DAMAGE")
+        print(f"\n{BOLD}{item.component}:{RESET} {item.hardware_name}")
+        print(f"  {BOLD}Status:{RESET} {status_col}{status_label}{RESET} ({item.confidence_pct}% Hardware Confidence)")
+        print(f"  {BOLD}Reading:{RESET} {item.diagnostics_reading}")
+        print(f"  {CYAN}{BOLD}Actionable Physical Repair Guidance:{RESET}")
+        for step in item.actionable_repair_guide:
+            print(f"    {DIM}•{RESET} {step}")
+    print("\n" + "=" * 78 + "\n")
+
 def interactive_shell():
     print(BANNER)
     current_scan = run_full_scan(is_simulator_mode=False)
@@ -210,8 +229,9 @@ def interactive_shell():
         print(f"  {GREEN}[2]{RESET} 1-Click Master Heal All Issues ({unhealed_count} detected)")
         print(f"  {YELLOW}[3]{RESET} Preview Remediation Scripts (Dry-Run)")
         print(f"  {MAGENTA}[4]{RESET} Inject Simulated PC Fault (Recruiter / Demo Sandbox)")
-        print(f"  {BLUE}[5]{RESET} Export Markdown Audit Report")
-        print(f"  {CYAN}[6]{RESET} Launch Web Command Center Dashboard")
+        print(f"  {GREEN}[5]{RESET} Physical Hardware S.M.A.R.T. & Damage Advisor")
+        print(f"  {BLUE}[6]{RESET} Export Markdown Audit Report")
+        print(f"  {CYAN}[7]{RESET} Launch Web Command Center Dashboard")
         print(f"  {DIM}[q]{RESET} Exit OmniHeal Shell")
 
         choice = input(f"\n{CYAN}{BOLD}omniheal>{RESET} ").strip().lower()
@@ -241,12 +261,15 @@ def interactive_shell():
             else:
                 print("Fault injection cancelled.")
         elif choice == "5":
+            render_hardware_advisor()
+            input(f"\nPress Enter to return to main menu...")
+        elif choice == "6":
             report = generate_markdown_report(current_scan)
             filename = f"OmniHeal-Audit-Report-{current_scan.scan_id}.md"
             with open(filename, "w", encoding="utf-8") as f:
                 f.write(report)
             print(f"\n{GREEN}[+] Audit report exported to: {os.path.abspath(filename)}{RESET}\n")
-        elif choice == "6":
+        elif choice == "7":
             print(f"\n{CYAN}[*] Launching OmniHeal Full-Stack Command Center...{RESET}")
             if platform.system() == "Windows":
                 subprocess.Popen(["start.bat"], shell=True)
@@ -254,7 +277,7 @@ def interactive_shell():
                 subprocess.Popen(["bash", "start.sh"])
             print(f"{GREEN}[+] Web UI available at: http://127.0.0.1:5173{RESET}")
         else:
-            print(f"{YELLOW}[!] Unknown command. Enter 1-6 or 'q' to quit.{RESET}")
+            print(f"{YELLOW}[!] Unknown command. Enter 1-7 or 'q' to quit.{RESET}")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -262,6 +285,7 @@ def main():
     )
     parser.add_argument("--scan", action="store_true", help="Run deep diagnostic scan and output findings")
     parser.add_argument("--heal", action="store_true", help="Auto-heal all detected issues")
+    parser.add_argument("--hardware", action="store_true", help="Run physical hardware S.M.A.R.T. and damage triage advisor")
     parser.add_argument("--dry-run", action="store_true", help="Simulate remediation without modifying system")
     parser.add_argument("--simulate", type=str, choices=[s.id for s in FAULT_SCENARIOS], help="Inject simulated fault scenario")
     parser.add_argument("--report", type=str, nargs="?", const="stdout", help="Generate Markdown audit report (or save to file)")
@@ -278,6 +302,11 @@ def main():
         else:
             subprocess.Popen(["bash", "start.sh"])
         print(f"{GREEN}[+] Web UI available at: http://127.0.0.1:5173{RESET}")
+        return
+
+    # Hardware physical advisor trigger
+    if args.hardware:
+        render_hardware_advisor()
         return
 
     # Non-interactive CLI flag execution

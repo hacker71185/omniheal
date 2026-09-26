@@ -11,6 +11,7 @@ from .models import (
     FaultScenario, InjectFaultRequest
 )
 from .scanners.engine import run_full_scan, get_os_info
+from .scanners.hardware_advisor import run_physical_hardware_triage, HardwareTriageItem
 from .remediators.network_healer import heal_network_issue
 from .remediators.memory_healer import heal_memory_issue
 from .remediators.cache_healer import heal_cache_issue
@@ -165,6 +166,11 @@ def inject_fault(request: InjectFaultRequest):
 def set_mode(simulator: bool):
     CURRENT_STATE["is_simulator_mode"] = simulator
     return {"is_simulator_mode": CURRENT_STATE["is_simulator_mode"]}
+
+@app.get("/api/hardware/triage", response_model=List[HardwareTriageItem])
+def get_hardware_triage():
+    """Returns physical hardware controller status and actionable physical repair steps if damaged."""
+    return run_physical_hardware_triage()
 
 @app.get("/api/report/markdown", response_class=PlainTextResponse)
 def get_report():
